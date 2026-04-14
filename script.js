@@ -152,14 +152,12 @@
   }
 
   // ---------- Reveal ----------
-  function renderReveal() {
+  function updateRevealContent() {
     const total = state.revealOrder.length;
     const idx = state.revealIndex;
     const player = state.players[state.revealOrder[idx]];
     $('#reveal-step').textContent = `${idx + 1} / ${total}`;
     $('#reveal-name').textContent = player.name;
-    const flip = $('#card-flip');
-    flip.classList.remove('flipped');
 
     const roleLabel = $('#role-label');
     const word = $('#secret-word');
@@ -178,9 +176,13 @@
       word.textContent = '???';
       hint.textContent = t('wordHintMrWhite');
     }
+  }
 
-    const nextBtn = $('#btn-next-reveal');
-    nextBtn.style.visibility = 'hidden';
+  function renderReveal() {
+    const flip = $('#card-flip');
+    flip.classList.remove('flipped');
+    updateRevealContent();
+    $('#btn-next-reveal').style.visibility = 'hidden';
   }
 
   function onCardTap() {
@@ -195,9 +197,14 @@
     state.revealIndex++;
     if (state.revealIndex >= state.revealOrder.length) {
       startDiscussion();
-    } else {
-      renderReveal();
+      return;
     }
+    const flip = $('#card-flip');
+    flip.classList.remove('flipped');
+    $('#btn-next-reveal').style.visibility = 'hidden';
+    // Wait for the flip-back animation to finish before swapping content,
+    // so the outgoing player's word never bleeds into the next card.
+    setTimeout(updateRevealContent, 650);
   }
 
   // ---------- Discussion ----------

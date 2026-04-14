@@ -1,4 +1,12 @@
-# Ethok-Ethok
+<p align="center">
+  <img src="icon-192.png" alt="Ethok-Ethok" width="128" height="128" />
+</p>
+
+<h1 align="center">Ethok-Ethok</h1>
+
+<p align="center">A social deduction party game. Find the impostor among you.</p>
+
+---
 
 A social deduction party game in the style of Undercover. Players share a secret word, one or more impostors get a similar-but-different word, and optional Mr. White has no word at all. Describe, vote, eliminate, repeat.
 
