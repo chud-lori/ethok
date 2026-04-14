@@ -99,6 +99,30 @@ Build and run: `docker build -t ethok . && docker run -p 8080:80 ethok`.
 - **Undercover** wins by surviving until impostors equal or outnumber civilians.
 - **Mr. White** wins by correctly guessing the civilian word when eliminated.
 
+## Repeat Probability
+
+Without history tracking, a random pick from 500 pairs would repeat often (birthday paradox): ~50% chance of at least one repeat by ~23 games.
+
+With the built-in history of the last 50 pairs per language:
+
+| Scenario | Chance of same pair repeating |
+| --- | --- |
+| 2 consecutive games | **0%** (last pair is blocked) |
+| Any two games within 50 rounds | **0%** |
+| Game 51 matching game 1 | 1/450 ≈ 0.22% |
+| Over 500 games | effectively uniform coverage |
+
+## Local Storage
+
+The app uses `localStorage` only, never cookies or a server:
+
+| Key | Purpose | Size |
+| --- | --- | --- |
+| `ethok_lang` | Selected language (`en` or `id`) | ~4 B |
+| `ethok_recent_pairs` | `{ en: [indices...], id: [indices...] }` — last 50 pair indices per language | ~1 KB max |
+
+No personal data, player names, or scores are stored. Clearing site data resets language choice and history.
+
 ## Credits
 
 Created by [Lori](https://profile.lori.my.id).
