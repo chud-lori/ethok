@@ -17,19 +17,28 @@ Pure static web app — no backend, no build step.
 - 🌐 Bilingual: English & Bahasa Indonesia (persisted per device)
 - 👥 3–20 players, configurable Undercover and Mr. White counts
 - 🗂️ 500 word pairs per language (1000 total)
+- ♻️ Anti-repeat history — no pair repeats within the last 50 games per language
 - 🎭 Full game loop: role reveal → discussion → vote → elimination → win detection
 - 🃏 Mr. White final-guess mechanic
-- 📱 Responsive design — mobile-first, works on desktop
+- 📱 Responsive, mobile-first, installable (PWA manifest, touch icons)
+- 🔎 SEO & link-preview ready (OG tags, Twitter card, JSON-LD, sitemap, robots)
+- 🎨 Light-blue theme with custom brand icon and OG image
 
 ## Project Structure
 
 ```
 ethok/
-├── index.html     # all screens as sections
-├── style.css      # responsive styles
-├── script.js      # game logic
-├── i18n.js        # EN/ID strings
-└── words.js       # word pair dataset
+├── index.html              # all screens as sections + meta/OG tags
+├── style.css               # responsive styles, light-blue theme
+├── script.js               # game logic + pair history
+├── i18n.js                 # EN/ID strings
+├── words.js                # 500 pairs per language
+├── manifest.webmanifest    # PWA manifest
+├── robots.txt / sitemap.xml
+├── icon.svg                # master icon
+├── icon-192.png / icon-512.png / apple-touch-icon.png / favicon-32.png
+├── og-image.png            # 1200×630 social preview
+└── _gen_icons.py           # regenerates icon set + OG image
 ```
 
 ## Run Locally
@@ -89,6 +98,10 @@ Build and run: `docker build -t ethok . && docker run -p 8080:80 ethok`.
 - **Civilians** win by eliminating every impostor.
 - **Undercover** wins by surviving until impostors equal or outnumber civilians.
 - **Mr. White** wins by correctly guessing the civilian word when eliminated.
+
+## Credits
+
+Created by [Lori](https://profile.lori.my.id).
 
 ## License
 

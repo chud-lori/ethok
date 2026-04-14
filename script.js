@@ -113,12 +113,48 @@
     updateStepperBounds();
   }
 
+  // ---------- Pair history (avoid short-term repeats) ----------
+  const HISTORY_KEY = 'ethok_recent_pairs';
+  const HISTORY_SIZE = 50; // per language
+
+  function loadHistory() {
+    try {
+      const raw = localStorage.getItem(HISTORY_KEY);
+      if (!raw) return {};
+      const parsed = JSON.parse(raw);
+      return parsed && typeof parsed === 'object' ? parsed : {};
+    } catch { return {}; }
+  }
+
+  function saveHistory(h) {
+    try { localStorage.setItem(HISTORY_KEY, JSON.stringify(h)); } catch {}
+  }
+
+  function pickPairIndex(lang) {
+    const total = WORDS[lang].length;
+    const history = loadHistory();
+    const recent = Array.isArray(history[lang]) ? history[lang] : [];
+    // Cap recent at total-1 so we always have at least one fresh option.
+    const blocked = new Set(recent.slice(-Math.min(HISTORY_SIZE, total - 1)));
+    const available = [];
+    for (let i = 0; i < total; i++) if (!blocked.has(i)) available.push(i);
+    const pool = available.length ? available : Array.from({ length: total }, (_, i) => i);
+    const picked = pool[Math.floor(Math.random() * pool.length)];
+
+    const next = recent.filter(i => i !== picked);
+    next.push(picked);
+    history[lang] = next.slice(-HISTORY_SIZE);
+    saveHistory(history);
+    return picked;
+  }
+
   // ---------- Game start ----------
   function startGame() {
     const inputs = $('#player-inputs').querySelectorAll('input');
     state.names = Array.from(inputs).map((i, idx) => (i.value.trim() || `${t('playerPlaceholder')} ${idx + 1}`));
 
-    const pair = shuffle(WORDS[state.lang])[0];
+    const idx = pickPairIndex(state.lang);
+    const pair = WORDS[state.lang][idx];
     // Randomize which side is civilian vs undercover
     if (Math.random() < 0.5) {
       state.civilianWord = pair[0];
