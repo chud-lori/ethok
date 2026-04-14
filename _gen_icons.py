@@ -76,15 +76,15 @@ def make_text_gradient(text, font, gradient_colors, size):
     return grad, txt_mask
 
 def make_icon(size, save_path):
-    bg_colors = [(30, 27, 75), (49, 46, 129), (15, 23, 42)]
-    letter_colors = [(245, 158, 11), (239, 68, 68), (99, 102, 241)]
+    bg_colors = [(56, 189, 248), (59, 130, 246), (99, 102, 241)]
+    letter_colors = [(255, 255, 255), (240, 249, 255), (219, 234, 254)]
     bg = gradient_bg(size, size, bg_colors)
     # soft glow spot
     glow = Image.new('RGBA', (size, size), (0, 0, 0, 0))
     gd = ImageDraw.Draw(glow)
     gd.ellipse(
         [size * 0.15, size * 0.1, size * 0.6, size * 0.55],
-        fill=(99, 102, 241, 55),
+        fill=(186, 230, 253, 90),
     )
     glow = glow.filter(ImageFilter.GaussianBlur(size // 10))
     bg = bg.convert('RGBA')
@@ -111,17 +111,17 @@ def make_icon(size, save_path):
 
 def make_og(path):
     w, h = 1200, 630
-    bg_colors = [(15, 23, 42), (30, 27, 75), (15, 23, 42)]
+    bg_colors = [(224, 242, 254), (239, 246, 255), (219, 234, 254)]
     img = gradient_bg(w, h, bg_colors).convert('RGBA')
     # decorative glow
     glow = Image.new('RGBA', (w, h), (0, 0, 0, 0))
     gd = ImageDraw.Draw(glow)
-    gd.ellipse([-200, -200, 600, 600], fill=(99, 102, 241, 80))
-    gd.ellipse([700, 300, 1400, 900], fill=(239, 68, 68, 60))
+    gd.ellipse([-200, -200, 600, 600], fill=(59, 130, 246, 70))
+    gd.ellipse([700, 300, 1400, 900], fill=(14, 165, 233, 60))
     glow = glow.filter(ImageFilter.GaussianBlur(120))
     img = Image.alpha_composite(img, glow)
 
-    letter_colors = [(245, 158, 11), (239, 68, 68), (99, 102, 241)]
+    letter_colors = [(14, 165, 233), (59, 130, 246), (99, 102, 241)]
     title_font = load_font(130)
     grad, mask = make_text_gradient('ETHOK-ETHOK', title_font, letter_colors, (w, 220))
     title_layer = Image.new('RGBA', (w, 220))
@@ -133,13 +133,13 @@ def make_og(path):
     sub = 'Find the impostor among you'
     sbox = d.textbbox((0, 0), sub, font=sub_font)
     sw = sbox[2] - sbox[0]
-    d.text(((w - sw) // 2, 440), sub, font=sub_font, fill=(203, 213, 225, 255))
+    d.text(((w - sw) // 2, 440), sub, font=sub_font, fill=(30, 41, 59, 255))
 
     tag_font = load_font(28)
     tag = 'Social deduction party game • EN / ID • 3–20 players'
     tbox = d.textbbox((0, 0), tag, font=tag_font)
     tw = tbox[2] - tbox[0]
-    d.text(((w - tw) // 2, 520), tag, font=tag_font, fill=(148, 163, 184, 255))
+    d.text(((w - tw) // 2, 520), tag, font=tag_font, fill=(71, 85, 105, 255))
 
     img.convert('RGB').save(path, quality=92)
     print(f'wrote {path} ({w}x{h})')
