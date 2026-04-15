@@ -87,17 +87,26 @@
     const container = $('#player-inputs');
     const n = state.config.players;
     const current = container.querySelectorAll('input');
-    const values = Array.from(current).map(i => i.value);
-    container.innerHTML = '';
-    for (let i = 0; i < n; i++) {
-      const input = document.createElement('input');
-      input.type = 'text';
-      input.className = 'text-input';
-      input.placeholder = `${t('playerPlaceholder')} ${i + 1}`;
-      input.value = values[i] || '';
-      input.maxLength = 20;
-      container.appendChild(input);
+
+    if (current.length > n) {
+      for (let i = current.length - 1; i >= n; i--) current[i].remove();
+    } else if (current.length < n) {
+      const frag = document.createDocumentFragment();
+      for (let i = current.length; i < n; i++) {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'text-input';
+        input.placeholder = `${t('playerPlaceholder')} ${i + 1}`;
+        input.maxLength = 20;
+        frag.appendChild(input);
+      }
+      container.appendChild(frag);
     }
+
+    // Refresh placeholders in case language changed, but keep typed values.
+    container.querySelectorAll('input').forEach((input, i) => {
+      input.placeholder = `${t('playerPlaceholder')} ${i + 1}`;
+    });
   }
 
   function stepConfig(key, delta) {

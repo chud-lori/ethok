@@ -27,7 +27,12 @@
 
 html, body {
   min-height: 100%;
-  overflow-x: hidden;
+}
+
+html, body {
+  /* `clip` avoids creating a scroll container on iOS, which can break
+     natural body scrolling when content exceeds the viewport. */
+  overflow-x: clip;
 }
 
 body {
@@ -50,7 +55,7 @@ body {
   min-height: 100dvh;
   padding: 20px;
   padding-top: max(20px, env(safe-area-inset-top));
-  padding-bottom: calc(max(20px, env(safe-area-inset-bottom)) + 20px);
+  padding-bottom: calc(max(32px, env(safe-area-inset-bottom)) + 32px);
   display: flex;
   flex-direction: column;
 }
@@ -350,10 +355,55 @@ body {
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
 }
 
+/* ==========================================================================
+   Setup screen: fixed-viewport 3-zone layout (topbar + config / player list /
+   action button). Pattern used by Undercover, Spyfall, Werewolf, etc.:
+   - Page never scrolls.
+   - The player-names list is the only scrolling region.
+   - Start Game stays pinned at the bottom regardless of player count.
+   Scoped via :has() so other screens keep their natural body-scroll behavior.
+   ========================================================================== */
+
+html:has(#screen-setup.active),
+html:has(#screen-setup.active) body {
+  overflow: hidden;
+  height: 100dvh;
+}
+
+html:has(#screen-setup.active) .app {
+  height: 100dvh;
+  max-height: 100dvh;
+  overflow: hidden;
+}
+
+/* Grid makes the zones explicit: the 1fr row is the only one that flexes;
+   minmax keeps the list usable even on short viewports. */
+#screen-setup.active {
+  display: grid;
+  grid-template-rows: auto auto minmax(80px, 1fr) auto;
+  gap: 20px;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* Player-names card fills the 1fr row and clips; its inner list scrolls. */
+#screen-setup > .card:nth-of-type(2) {
+  min-height: 0;
+  overflow: hidden;
+}
+
 #player-inputs {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  /* Small inset so the focus ring isn't clipped by the scroll container. */
+  padding: 4px;
+  margin: -4px;
 }
 
 /* Reveal */
